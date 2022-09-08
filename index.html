@@ -1,7 +1,491 @@
----
-# You don't need to edit this file, it's empty on purpose.
-# Edit theme's home layout instead if you wanna make some changes
-# See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-layout: home
-author_profile: true
----
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+
+  <title>JSONEditor Web</title>
+  <link href="./themes/jse-theme-dark.css" rel="stylesheet" type="text/css">
+  <link href="./themes/jse-theme-default.css" rel="stylesheet" type="text/css">
+  <link href="./css/switch.css" rel="stylesheet" type="text/css">
+
+  <script src="./dist/split.min.js"></script>
+  <script src="./dist/fast-json-patch.min.js"></script>
+
+  <style>
+    body {
+      font: 10.5pt arial;
+      line-height: 150%;
+      background-color: var(--jse-body-color);
+      color: var(--jse-text-color);
+    }
+
+    #header {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      width: 100%;
+      height: 15vh;
+    }
+
+    #headerText {
+      font-size: 2vw
+    }
+
+    #statusPanel {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-end;
+      align-content: flex-end;
+      justify-content: left;
+      height: 15vh;
+      padding-bottom: 15px;
+      gap: 20px
+    }
+
+    #themePanel {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-end;
+      justify-content: right;
+      height: 15vh;
+      padding-bottom: 15px;
+    }
+
+    #diffCount {
+      font-size: medium
+    }
+
+    #layout {
+      margin-left: 3%;
+      margin-right: 3%;
+      padding-bottom: 25px
+    }
+
+    .headerLogo {
+      height: 40px;
+      text-align: center;
+      vertical-align: middle;
+      padding-bottom: 10px
+    }
+
+    #content {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .gutter {
+      height: 80vh;
+      margin-left: 10px;
+      margin-right: 10px;
+      background-color: var(--jse-body-color);
+      background-repeat: no-repeat;
+      background-position: 50%;
+    }
+
+    .gutter:hover {
+      background-color: var(--jse-gutter-hover-color);
+    }
+
+    .gutter.gutter-horizontal {
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+      cursor: col-resize;
+    }
+
+    #editorLeft {
+      /* flex-grow:1; */
+      height: 80vh;
+      overflow: auto
+    }
+
+    #editorRight {
+      /* flex-grow:1; */
+      height: 80vh;
+      overflow: auto
+    }
+
+    .jse-json-node.different_element .jse-contents,
+    .jse-json-node.different_element .jse-header,
+    .jse-json-node.different_element .jse-footer {
+      background-color: var(--jse-different-element-color);
+    }
+
+    .jse-json-node.blink .jse-key {
+      animation: blinkingKey 1s;
+    }
+
+    .jse-json-node.blink .jse-value,
+    .jse-json-node.blink .jse-contents,
+    .jse-json-node.blink .jse-header,
+    .jse-json-node.blink .jse-footer {
+      animation: blinkingBackground 1s;
+    }
+
+    @keyframes blinkingBackground {
+      0% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      20% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-value-color-string);
+      }
+      40% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      60% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-value-color-string);
+      }
+      80% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      100% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-value-color-string);
+      }
+    }
+
+    @keyframes blinkingKey {
+      0% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      20% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-key-color);
+      }
+      40% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      60% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-key-color);
+      }
+      80% {
+        background-color: var(--jse-modal-code-background);
+        color: var(--jse-modal-code-background);
+      }
+      100% {
+        background-color: var(--jse-different-element-color);
+        color: var(--jse-key-color);
+      }
+    }
+  </style>
+</head>
+
+<body id="mainBody" class="jse-theme-dark">
+  <div id="layout">
+    <div id="header">
+      <div id="statusPanel" style="width:25%;">
+        <div id="statusDiv">
+          <span id="statusSpan" style="font-family:monospace"></span>
+        </div>
+        <div id="actionGroup" style="display:none">
+          <button id="upAction" class="actionButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up"
+              viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+            </svg>
+          </button>
+          <button id="downAction" class="actionButton">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-chevron-down" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style="width:50%; text-align:center">
+        <h1>
+          <!-- <img class="headerLogo" src="./asset/json-icon.png"></img> -->
+          <span id="headerText">JSON Editor</span>
+        </h1>
+      </div>
+      <div id="themePanel" style="width:25%;">
+        <label class="switch">
+          <input type="checkbox">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
+    <div id="content">
+      <div id="editorLeft"></div>
+      <div id="editorRight"></div>
+    </div>
+  </div>
+
+
+  <script type="module">
+    import { JSONEditor } from '../package-vanilla/index.js'
+
+    /**
+     * Initialize left and right editors
+     */
+    const editorLeft = new JSONEditor({
+      target: document.getElementById('editorLeft'),
+      props: {
+        onChange: onChange,
+        onClassName: createOnClassName()
+      }
+    })
+    const editorRight = new JSONEditor({
+      target: document.getElementById('editorRight'),
+      props: {
+        onChange: onChange,
+        onClassName: createOnClassName()
+      }
+    })
+
+    /**
+     * Callback function that is triggered each time a change occurs in editor
+     */
+    function onChange(content, previous, changeStatus) {
+      if (bothEditorsValid()) {
+        try {
+          let leftContent = editorLeft.get()
+          let rightContent = editorRight.get();
+
+          let jsonLeft = leftContent['json'] ? leftContent['json'] : JSON.parse(leftContent['text'])
+          let jsonRight = rightContent['json'] ? rightContent['json'] : JSON.parse(rightContent['text'])
+          jsonDiff = jsonpatch.compare(jsonLeft, jsonRight)
+
+          diffKeyList = []
+          for (let i of jsonDiff) {
+            diffKeyList.push(i['path'])
+          }
+          diffKeyList.reverse()
+
+          let actionGroup = document.getElementById("actionGroup")
+          diffPointer = 0
+          if (diffKeyList.length > 0) {
+            actionGroup.style.display = "block"
+          } else {
+            actionGroup.style.display = "none"
+          }
+
+          editorLeft.updateProps({
+            onClassName: createOnClassName()
+          })
+
+          editorRight.updateProps({
+            onClassName: createOnClassName()
+          })
+
+          updateStatusMessage(diffKeyList.length + " differences")
+        } catch (err) {
+          updateStatusMessage("SyntaxError: " + err.message)
+        }
+      } else {
+        updateStatusMessage("")
+      }
+    }
+
+    /**
+     * Creates callback function for dealing with re-rendering nodes in
+     * tree mode.
+     * 
+     * We need this method so that a new callback can be passed each time
+     * a change happens in either editor. This forces a refresh of the 
+     * inactive editor.
+     */
+    function createOnClassName() {
+      return function onClassName(path, value) {
+        if (diffKeyList.length > 0) {
+          if (path.length > 0) {
+            let pathString = arrayToString(path)
+            if (diffKeyList.includes(pathString) || pathIsChildOfDiffParent(diffKeyList, pathString)) {
+              return `different_element`
+            }
+          }
+        }
+        return `the_same_element`
+      }
+    }
+
+    /**
+     * This method checks if the current path is a child
+     * of a parent element that is different.
+     *  
+     * Given that `obj/listOfStudents` is diff
+     * `obj/listOfStudents/0/{student1}`, `obj/listOfStudents/1/{student2}` 
+     * will be considered different and be highlighted as well
+     */
+    function pathIsChildOfDiffParent(diffKeys, pathString) {
+      for (let key of diffKeys) {
+        key += "/"
+        if (pathString.indexOf(key) != -1) {
+          return true
+        }
+      }
+      return false
+    }
+
+    /**
+     * Helper method to convert path (list type) to string
+     * for comparison
+     */
+    function arrayToString(arr) {
+      let res = ""
+      for (let i of arr) {
+        res += "/" + i
+      }
+      return res
+    }
+
+    /**
+     * Helper method to check that both editors have valid JSON
+     * to trigger for automated diff checking
+     */
+    function bothEditorsValid() {
+      let leftContent = editorLeft.get()
+      let rightContent = editorRight.get()
+
+      return (leftContent['json'] != null || leftContent['text'] != "") &&
+        (rightContent['json'] != null || rightContent['text'] != "")
+    }
+
+    function updateStatusMessage(msg) {
+      let span = document.getElementById("statusSpan")
+
+      if (msg.indexOf("SyntaxError") != -1) {
+        if (msg.indexOf("Unexpected end of JSON input") != -1) {
+          span.textContent = ""
+        } else {
+          span.textContent = "Invalid JSON!"
+        }
+      } else {
+        span.textContent = msg
+      }
+    }
+
+    /**
+     * Callback to handle up-button
+     * Proceed to identify next diff k-v by flashing
+     */
+    function onUpAction() {
+      convertToTreeMode()
+      diffPointer -= 1
+      if (diffPointer == -1) {
+        diffPointer = 1
+      } else if (diffPointer == 0) {
+        diffPointer += 1
+      }
+      flashDiffComponents(diffPointer)
+    }
+
+    /**
+     * Callback to handle down-button
+     * Proceed to identify previous diff k-v by flashing
+     */
+    function onDownAction() {
+      convertToTreeMode()
+      diffPointer += 1
+      if (diffPointer > diffKeyList.length) {
+        diffPointer -= 1
+      }
+      flashDiffComponents(diffPointer)
+    }
+
+    // Helper method to convert to tree when diff navigation function is used
+    function convertToTreeMode() {
+      editorLeft.updateProps({
+        mode: "tree"
+      })
+      editorRight.updateProps({
+        mode: "tree"
+      })
+    }
+
+    /**
+     * Helper method to flash selected diff k-v
+     * based on the provided index
+     */
+    function flashDiffComponents(diffPointer) {
+      let diffPath = diffKeyList[diffPointer - 1]
+
+      let msg = "" + diffPointer + "/" + diffKeyList.length + " differences"
+      updateStatusMessage(msg)
+
+      let pathToFind = diffPath.substring(1).split("/")
+
+      let leftPathNode = editorLeft.findElement(pathToFind)
+      let rightPathNode = editorRight.findElement(pathToFind)
+
+      if (leftPathNode != null) {
+        leftPathNode.classList.remove("blink")
+        leftPathNode.offsetHeight
+        leftPathNode.classList.add("blink")
+      }
+      if (rightPathNode != null) {
+        rightPathNode.classList.remove("blink")
+        rightPathNode.offsetHeight
+        rightPathNode.classList.add("blink")
+      }
+    }
+
+    // Initialize global scope variables for diff comparison
+    let jsonDiff = {}
+    let diffKeyList = []
+    let diffPointer = 0
+
+    let upAction = document.getElementById("upAction")
+    let downAction = document.getElementById("downAction")
+
+    upAction.addEventListener('click', onUpAction);
+    downAction.addEventListener('click', onDownAction);
+
+  </script>
+
+  <script>
+    editorInstances = Split(['#editorLeft', '#editorRight'], {
+      sizes: [50, 50],
+      minSize: [0, 0],
+      gutterSize: 50,
+      dragInterval: 1,
+      snapOffset: 100,
+      onDrag: function (sizes) {
+        // sizes[0] refer to the left container
+        if (sizes[0] >= 4.5) {
+          document.getElementById("editorLeft").style.display = "block"
+        } else {
+          document.getElementById("editorLeft").style.display = "none"
+        }
+
+        // sizes[1] refer to the right container
+        if (sizes[1] >= 4.5) {
+          document.getElementById("editorRight").style.display = "block"
+        } else {
+          document.getElementById("editorRight").style.display = "none"
+        }
+      }
+    })
+
+    editorInstances.collapse(1) // default 1 editor
+    document.getElementById("editorRight").style.display = "none"
+
+    let checkbox = document.querySelector("input[type=checkbox]");
+    let body = document.getElementById("mainBody")
+    checkbox.addEventListener('change', function () {
+      if (this.checked) {
+        mainBody.classList.remove("jse-theme-dark")
+      } else {
+        mainBody.classList.add("jse-theme-dark")
+      }
+    });
+  </script>
+</body>
+
+</html>
