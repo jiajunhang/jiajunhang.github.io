@@ -6,7 +6,7 @@
   --jse-text-color: #ebf7ff;
   --jse-header-color: #ffffff;
   --jse-body-color: #001c4e;
-  --jse-gutter-hover-color: #4b4b4b;
+  --jse-gutter-hover-color: #000;
 
   /* main, menu, modal */
   --jse-main-border: 1px solid #4f4f4f;
