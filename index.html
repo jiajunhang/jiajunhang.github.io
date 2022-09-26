@@ -30,7 +30,8 @@
     }
 
     #headerText {
-      font-size: 2vw
+      font-size: 2vw;
+      color: var(--jse-header-color);
     }
 
     #statusPanel {
@@ -66,10 +67,9 @@
     }
 
     .headerLogo {
-      height: 40px;
       text-align: center;
       vertical-align: middle;
-      padding-bottom: 10px
+      padding-right: 15px
     }
 
     #content {
@@ -210,7 +210,7 @@
       </div>
       <div style="width:50%; text-align:center">
         <h1>
-          <!-- <img class="headerLogo" src="./asset/json-icon.png"></img> -->
+          <img class="headerLogo" src="./asset/editor-icon.png"></img>
           <span id="headerText">JSON Editor</span>
         </h1>
       </div>
@@ -475,6 +475,7 @@
 
     editorInstances.collapse(1) // default 1 editor
     document.getElementById("editorRight").style.display = "none"
+    document.getElementById("editorLeft").style.width = "calc(100% - 25px)"
 
     let checkbox = document.querySelector("input[type=checkbox]");
     let body = document.getElementById("mainBody")
