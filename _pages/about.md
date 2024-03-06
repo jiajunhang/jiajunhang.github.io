@@ -3,6 +3,10 @@ permalink: /about/
 title: "About"
 ---
 
-Tempor velit sint sunt ipsum tempor enim ad qui ullamco. Est dolore anim ad velit duis dolore minim sunt aliquip amet commodo labore. Ut eu pariatur aute ea aute excepteur laborum. Esse ea esse excepteur minim mollit qui cillum excepteur ex dolore magna. Labore deserunt fugiat incididunt incididunt sint ea. Consequat dolore aute laboris quis proident quis non et est consectetur ex eiusmod sit culpa.
+Hello, my name is Jia Jun and I enjoy building things to solve practical, real-world problems. 
 
-Cupidatat ea do et in excepteur in. Ad nostrud ut est esse eu duis ea sunt eiusmod. Aliquip tempor veniam sint elit fugiat. Velit incididunt laboris amet incididunt labore dolore irure velit excepteur commodo deserunt laborum. Consectetur eu fugiat veniam veniam Lorem labore magna eiusmod. Ea occaecat reprehenderit pariatur consectetur minim labore ut aliquip.
+My interest in programming started back in early high school days when my friend and I stumbled upon a forum called `leetcoders` (yes, leetcoders, not leetcode!) where we discovered a community of online wizards who were able to build programs that could lock you out of your MSN and Facebook accounts with just your email address (read: brute force, back then there weren't things like CAPTCHA to prevent such attacks). 
+
+Today, I enjoy learning about the complexities and thought process behind the systems and applications that appear to be simple - things that we often take for granted to simply "just work". 
+
+These days, my main focus is on building and maintaining the Risk Platform that safeguards our user assets at Binance.
