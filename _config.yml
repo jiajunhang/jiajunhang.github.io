@@ -59,6 +59,8 @@ author:
   name   : "Jia Jun HANG"
   avatar : "/assets/images/bio-photo.jpg"
   bio    : "Software engineer & dog lover."
+  location : "Singapore, SG"
+  email : "jiajunhangg@gmail.com"
   links:
     # - label: "Website"
     #   icon: "fas fa-fw fa-link"
@@ -72,9 +74,9 @@ author:
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/jia-jun-hang/"
-    - label: "jiajunhangg@gmail.com"
-      icon: "fas fa-fw fa-envelope-square"
-      url: ""
+    # - label: "jiajunhangg@gmail.com"
+    #   icon: "fas fa-fw fa-envelope-square"
+    #   url: ""
 
 footer:
   links:
