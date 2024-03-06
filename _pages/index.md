@@ -1,4 +1,4 @@
----
+<!-- ---
 layout: single
 permalink: /
 title: "About"
@@ -10,4 +10,4 @@ My interest in programming started back in early high school days when my friend
 
 Today, I enjoy learning about the complexities and thought process behind the systems and applications that appear to be simple - things that we often take for granted to simply "just work". 
 
-These days, my main focus is on building and maintaining the Risk Platform that safeguards our user assets at Binance.
+These days, my main focus is on building and maintaining the Risk Platform that safeguards our user assets at Binance. -->
