@@ -85,7 +85,7 @@ If we execute the query:
 ```
 SELECT * from User WHERE username = "ABC"
 ```
-The database engine will parse this query and plan an optimized execution plan. Given that there is an index on username, it has decided to search the secondary index for "ABC". Upon finding "ABC" in the secondary index, it will also have the corresponding cluster key (id, which is the primary key). 
+The database engine will parse this query and develop an optimized execution plan. Given that there is an index on username, it has decided to search the secondary index for "ABC". Upon finding "ABC" in the secondary index, it will also have the corresponding cluster key (id, which is the primary key). 
 
 Notice that because we did a SELECT *, the query is also requesting for the column information for first name and last name. As a result, it now has to search through the cluster index to retrieve the full row data.
 
